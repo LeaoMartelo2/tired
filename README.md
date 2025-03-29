@@ -2,9 +2,14 @@
 
 ## A Emacs Dired clone, as a standalone application for your terminal 
 
-Tired is a clone of the [Dired](https://wikemacs.org/wiki/Dired) file browser of Emacs, but remade as a standalone application for the terminal
+Tired is a clone of the [Dired](https://wikemacs.org/wiki/Dired) file browser of Emacs, but remade as a standalone application for the terminal.
 
-(dIRED for Terminal -> Tired)
+Keep in mind this is made through the eyes of someone who has opened Emacs twice i think
+
+(Terminal dIRED -> Tired)
+
+> [!WARNING]
+> This repository has been re-uploaded, as I managed to nuke the git repo :D
 
 <img src="image.png">
 

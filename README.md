@@ -9,7 +9,7 @@ Keep in mind this is made through the eyes of someone who has opened Emacs twice
 (Terminal dIRED -> Tired)
 
 > [!WARNING]
-> This repository has been re-uploaded, as I managed to nuke the git repo :D
+> This repository has been re-uploaded, as I managed to break it, very badly, to the point of messing up git history.
 
 <img src="image.png">
 

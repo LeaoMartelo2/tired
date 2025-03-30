@@ -28,17 +28,15 @@ Configuration file
 /* LS_COMMAND configuration:
  * You can change the custom flags for the 'ls' command output in the program
  * just keep in mind that it works best with the default flags on (or atleast -F and -l)
- * and requires a '\' (escaped) at the start to ignore any changes in your .bashrc or any shell you might have.
- * Default:
+ * and requires a '\' (escaped) at the start to ignore any changes in your .bashrc or any shell you might have. */
 
-#define LS_COMMAND "\\ls -F -l -h -a"
- */
+#define IMAGE_VIEWER_COMMAND "gwenview %s"
+#define VIDEO_PLAYER_COMMAND "mpv %s"
+
+/* Custom commands configuration:
+ * Change the command to open the file type */
 
 #define ENTRIES_PER_PAGE 20
-
-/* Default:
-#define ENTRIES_PER_PAGE 20
-*/
 
 #define COLOR_DIRECTORY COLOR_BLUE
 #define COLOR_EXECUTABLE COLOR_GREEN
@@ -70,22 +68,15 @@ Configuration file
 #define KEY_NEXT_PAGE 'n'
 #define KEY_PREV_PAGE 'p'
 #define KEY_GO_UP KEY_BACKSPACE
+#define KEY_RUN_CMD 'x'
+#define KEY_SEARCH_1 '/'
+#define KEY_SEARCH_2 'f'
+#define KEY_MKDIR 'm'
+#define KEY_TOUCH 't'
 
 /* Keybindings configuration:
  * Customize your keybinds for the program to adjust your usage experience
- * Default:
-#define KEY_QUIT 'q'
-#define KEY_SHOW_HELP 'h'
-#define KEY_RELOAD KEY_F(5)
-#define KEY_RENAME_1 KEY_F(2)
-#define KEY_RENAME_2 'r'
-#define KEY_DELETE_1 KEY_DC
-#define KEY_DELETE_2 'd'
-#define KEY_JUMP 'g'
-#define KEY_NEXT_PAGE 'n'
-#define KEY_PREV_PAGE 'p'
-#define KEY_GO_UP KEY_BACKSPACE
-*/
+ */
 
 /* Ncurses color list:
 

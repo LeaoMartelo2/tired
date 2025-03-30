@@ -593,14 +593,25 @@ int main(void) {
 
                 char command[1024];
 
-                if (ext && strcasecmp(ext, ".png") == 0) {
+                if (ext && strcasecmp(ext, ".png") == 0 ||
+                    ext && strcasecmp(ext, ".jpeg") == 0 ||
+                    ext && strcasecmp(ext, ".jpg") == 0 ||
+                    ext && strcasecmp(ext, ".gif") == 0) {
 
                     snprintf(command, sizeof(command), IMAGE_VIEWER_COMMAND, entries[selected]->fname);
                     run_executable(command);
 
-                } else if (ext && strcasecmp(ext, ".mp4") == 0) {
+                } else if (ext && strcasecmp(ext, ".mp4") == 0 ||
+                           ext && strcasecmp(ext, ".mov") == 0) {
 
                     snprintf(command, sizeof(command), VIDEO_PLAYER_COMMAND, entries[selected]->fname);
+                    run_executable(command);
+
+                } else if (ext && strcasecmp(ext, ".mp3") == 0 ||
+                           ext && strcasecmp(ext, ".ogg") == 0 ||
+                           ext && strcasecmp(ext, ".wav") == 0) {
+
+                    snprintf(command, sizeof(command), AUDIO_PLAYER_COMMAND, entries[selected]->fname);
                     run_executable(command);
 
                 } else if (entries[selected]->type == file_exec) {

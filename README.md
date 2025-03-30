@@ -78,7 +78,7 @@ You can also press `g` to jump by the line number.
 
 Press `x` to run a command on the current directory.
 
-Press `m` to create a directory and `t` to create a file.
+Press `m` to create a directory and `t` to touch (create) a file.
 
 Press `d` to delete the current selected file.
 

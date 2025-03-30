@@ -32,9 +32,11 @@ Configuration file
 
 #define IMAGE_VIEWER_COMMAND "gwenview %s"
 #define VIDEO_PLAYER_COMMAND "mpv %s"
+#define AUDIO_PLAYER_COMMAND "vlc %s"
 
 /* Custom commands configuration:
- * Change the command to open the file type */
+ * Change the command to open the file type, you can change the program and add your custom flags.
+ * Make sure it has the %s where the file name is supposed to be when you run the command.*/
 
 #define ENTRIES_PER_PAGE 20
 

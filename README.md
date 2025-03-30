@@ -4,7 +4,7 @@
 
 Tired is a clone of the [Dired](https://wikemacs.org/wiki/Dired) file browser of Emacs, but remade as a standalone application for the terminal.
 
-Keep in mind this is made through the eyes of someone who has opened Emacs twice i think
+!! Keep in mind this is made through the eyes of someone who has barely used Emacs !!
 
 (Terminal dIRED -> Tired)
 
@@ -16,7 +16,7 @@ Keep in mind this is made through the eyes of someone who has opened Emacs twice
 <sub>(Tired being used to display the root of the project)</sub>
 
 > [!NOTE]
-> This is very buggy made with only my use case in mind.\
+> This is very buggy made with only me using it in mind\
 > Don't be afraid of making pull requests of new USEFUL functionality or fixing bugs.
 
 > [!WARNING]
@@ -45,7 +45,8 @@ cp src/config.h.def src/config.h
 
 This project uses the [nob.h](https://github.com/tsoding/nob.h) build system, be sure to check it out.
 
-The only real `requireaments` for the project are `ncurses library` and a `c compiler`.
+The only real `requireaments` for the project are [ncurses library](https://en.wikipedia.org/wiki/Ncurses) and 
+a `c compiler`.
 
 To first build the project you need to bootstrap the build system. That is made very easy with the nob.
 
@@ -67,10 +68,21 @@ Press `h` at any moment to open the help menu.
 
 Navigate arround with the `arrow keys`.
 
-Press `Enter` to open a directory / run a executable.
+Press `Enter` to go inside a directory /  open a file. \
+You can configure the command to open a specified file type at `src/config.h`.
 
 Press `Backspace` to go up a directory.
 
-Press `g` and type a number, this will switch your selection to the file with the same number at the [square brackets]
+Press `f` or `/` to open a search box, it will try to jump to the best match to your text.\
+You can also press `g` to jump by the line number.
+
+Press `x` to run a command on the current directory.
+
+Press `m` to create a directory and `t` to create a file.
+
+Press `d` to delete the current selected file.
+
+
+
 
 Too much files to fit in the screen? Press `n` and `p` to navigate between next and previous pages.

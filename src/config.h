@@ -25,17 +25,16 @@ Configuration file
 
 #define LS_COMMAND "\\ls -F -l -h -a"
 
-/* LS_COMMAND configuration:
- * You can change the custom flags for the 'ls' command output in the program
- * just keep in mind that it works best with the default flags on (or atleast -F and -l)
+/* just keep in mind that it works best with the default flags on (or atleast -F and -l)
  * and requires a '\' (escaped) at the start to ignore any changes in your .bashrc or any shell you might have. */
 
 #define IMAGE_VIEWER_COMMAND "gwenview %s"
 #define VIDEO_PLAYER_COMMAND "mpv %s"
 #define AUDIO_PLAYER_COMMAND "vlc %s"
+#define TERM_OPEN_COMMAND "alacritty --hold -e ./%s"
+#define TERM_OPEN_LOCATION_COMMAND "alacritty --working-directory %s"
 
-/* Custom commands configuration:
- * Change the command to open the file type, you can change the program and add your custom flags.
+/* Change the command to open the file type, you can change the program and add your custom flags.
  * Make sure it has the %s where the file name is supposed to be when you run the command.*/
 
 #define ENTRIES_PER_PAGE 20
@@ -45,19 +44,6 @@ Configuration file
 #define COLOR_REGULAR COLOR_WHITE
 #define COLOR_SYMLINK COLOR_CYAN
 #define COLOR_BACKGROUND COLOR_BLACK
-
-/* COLORS configuration:
- * Here you can change the colors of the different file types on the list
- * those use the ncurses colors, that can be found at the end of the file
- *
- * Default:
-#define COLOR_DIRECTORY COLOR_BLUE
-#define COLOR_EXECUTABLE COLOR_GREEN
-#define COLOR_REGULAR COLOR_WHITE
-#define COLOR_SYMLINK COLOR_CYAN
-#define COLOR_BACKGROUND COLOR_BLACK
-
-*/
 
 #define KEY_QUIT 'q'
 #define KEY_SHOW_HELP 'h'
@@ -75,20 +61,16 @@ Configuration file
 #define KEY_SEARCH_2 'f'
 #define KEY_MKDIR 'm'
 #define KEY_TOUCH 't'
-
-/* Keybindings configuration:
- * Customize your keybinds for the program to adjust your usage experience
- */
+#define KEY_TERM_OPEN 'z'
+#define KEY_OPEN_LOCATION 'l'
 
 /* Ncurses color list:
-
-COLOR_BLACK
-COLOR_RED
-COLOR_GREEN
-COLOR_YELLOW
-COLOR_BLUE
-COLOR_MAGENTA
-COLOR_CYAN
-COLOR_WHITE
-
+    COLOR_BLACK
+    COLOR_RED
+    COLOR_GREEN
+    COLOR_YELLOW
+    COLOR_BLUE
+    COLOR_MAGENTA
+    COLOR_CYAN
+    COLOR_WHITE
 */

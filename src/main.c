@@ -46,6 +46,7 @@ typedef struct ls_entry {
 } ls_entry;
 
 void trim_newline(char *s);
+void trim_executable_mark(char *s);
 int parse_ls_line(char *line, ls_entry *entry);
 int load_ls_entries(const char *path, ls_entry ***entries_out);
 void free_ls_entry(ls_entry *entry);
@@ -55,12 +56,19 @@ void show_help(void);
 int confirm_box(const char *msg);
 int prompt_input(const char *prompt, char *buffer, int buf_size);
 void show_message(const char *msg);
-void run_executable(const char *file_path);
+void run_executable(char *file_path);
 
 static char last_action[LAST_ACTION_SIZE] = "";
 
 void trim_newline(char *s) {
     char *p = strchr(s, '\n');
+    if (p) {
+        *p = '\0';
+    }
+}
+
+void trim_executable_mark(char *s) {
+    char *p = strchr(s, '*');
     if (p) {
         *p = '\0';
     }
@@ -241,8 +249,10 @@ void show_help(void) {
     mvprintw(10, 4, "%c        : Run command", KEY_RUN_CMD);
     mvprintw(11, 4, "%c        : mkdir", KEY_MKDIR);
     mvprintw(12, 4, "%c        : create file", KEY_TOUCH);
-    mvprintw(13, 4, "%c        : Show help", KEY_SHOW_HELP);
-    mvprintw(14, 4, "%c        : Quit", KEY_QUIT);
+    mvprintw(13, 4, "%c        : open in a new terminal", KEY_TERM_OPEN);
+    mvprintw(14, 4, "%c        : open location in a new terminal window", KEY_OPEN_LOCATION);
+    mvprintw(15, 4, "%c        : Show help", KEY_SHOW_HELP);
+    mvprintw(16, 4, "%c        : Quit", KEY_QUIT);
 
     mvprintw(LINES - 2, 2, "Press any key to return.");
 
@@ -358,13 +368,15 @@ int prompt_input(const char *prompt, char *buffer, int buf_size) {
     return 0;
 }
 
-void run_executable(const char *file_path) {
+void run_executable(char *file_path) {
 
     if (confirm_box("Open this file?")) {
 
         clear();
         refresh();
         endwin(); /* exit ncurses mode temporarily */
+
+        trim_executable_mark(file_path);
 
         printf("Running: %s\n", file_path);
         int status = system(file_path);
@@ -477,7 +489,8 @@ int main(void) {
             info_bar[sizeof(info_bar) - 1] = '\0';
         }
         mvprintw(LINES - 2, 0, "%s", info_bar);
-        mvprintw(LINES - 1, 0, "q: quit | h: help | r: rename | d: delete | n: next | p: prev | m: mkdir | t: touch | x: run command");
+        mvprintw(LINES - 1, 0, "q: Quit | h: Help | r: Rename | d: Delete | n: Next | p: Prev "
+                               "| m: mkdir | t: touch | x: Run Command | z: Run in a new window");
         refresh();
 
         ch = getch();
@@ -607,20 +620,17 @@ int main(void) {
 
                     snprintf(command, sizeof(command), IMAGE_VIEWER_COMMAND, entries[selected]->fname);
                     run_executable(command);
-
                 } else if ((ext && strcasecmp(ext, ".mp4") == 0) ||
                            (ext && strcasecmp(ext, ".mov")) == 0) {
 
                     snprintf(command, sizeof(command), VIDEO_PLAYER_COMMAND, entries[selected]->fname);
                     run_executable(command);
-
                 } else if ((ext && strcasecmp(ext, ".mp3")) == 0 ||
                            (ext && strcasecmp(ext, ".ogg")) == 0 ||
                            (ext && strcasecmp(ext, ".wav")) == 0) {
 
                     snprintf(command, sizeof(command), AUDIO_PLAYER_COMMAND, entries[selected]->fname);
                     run_executable(command);
-
                 } else {
 
                     /* fallback */
@@ -636,7 +646,6 @@ int main(void) {
 
                 page = selected / ENTRIES_PER_PAGE;
             }
-
         } else if (ch == KEY_RENAME_1 || ch == KEY_RENAME_2) {
 
             char new_name[256] = {0};
@@ -698,19 +707,18 @@ int main(void) {
                     }
                 }
             }
-
         } else if (ch == KEY_DELETE_1 || ch == KEY_DELETE_2) {
 
             if (confirm_box("Confirm delete?")) {
 
-                char del_path[1024];
-                int ret6 = snprintf(del_path, sizeof(del_path), "%s/%s", current_path, entries[selected]->fname);
-                if (ret6 < 0 || (size_t)ret6 >= sizeof(del_path)) {
-                    del_path[sizeof(del_path) - 1] = '\0';
-                }
+                char del_path[2048];
+                snprintf(del_path, sizeof(del_path), "%s/%s", current_path, entries[selected]->fname);
+
+                trim_executable_mark(del_path);
 
                 if (remove(del_path) == 0) {
                     snprintf(last_action, LAST_ACTION_SIZE, "Deleted '%.50s'", entries[selected]->fname);
+
                     free_ls_entries(entries, num_entries);
                     num_entries = load_ls_entries(current_path, &entries);
 
@@ -718,9 +726,13 @@ int main(void) {
                         selected = num_entries - 1;
 
                     page = selected / ENTRIES_PER_PAGE;
+
+                } else {
+                    endwin();
+                    printf("path sent%s\n", del_path);
+                    perror("remove()\n");
                 }
             }
-
         } else if (ch == KEY_RUN_CMD) {
 
             char cmd[256] = {0};
@@ -738,7 +750,6 @@ int main(void) {
 
                 page = selected / ENTRIES_PER_PAGE;
             }
-
         } else if (ch == KEY_MKDIR) {
 
             char dir_name[256] = {0};
@@ -763,7 +774,6 @@ int main(void) {
 
                 page = selected / ENTRIES_PER_PAGE;
             }
-
         } else if (ch == KEY_TOUCH) {
             char file_name[256] = {0};
             prompt_input("Touch: ", file_name, sizeof(file_name));
@@ -798,7 +808,6 @@ int main(void) {
                 selected = num_entries - 1;
 
             page = selected / ENTRIES_PER_PAGE;
-
         } else if (ch == KEY_GO_UP) {
             if (chdir("..") == 0) {
 
@@ -816,6 +825,35 @@ int main(void) {
 
                 page = selected / ENTRIES_PER_PAGE;
             }
+        } else if (ch == KEY_TERM_OPEN) {
+
+            if (entries[selected]->type == file_exec) {
+
+                char command[2048];
+
+                snprintf(command, sizeof(command), TERM_OPEN_COMMAND, entries[selected]->fname);
+                run_executable(command);
+
+                free_ls_entries(entries, num_entries);
+                num_entries = load_ls_entries(current_path, &entries);
+
+                if (selected >= num_entries)
+                    selected = num_entries - 1;
+
+                page = selected / ENTRIES_PER_PAGE;
+
+            }
+
+            else {
+                show_message("File must be executable.");
+            }
+        } else if (ch == KEY_OPEN_LOCATION) {
+
+            char command[2048];
+
+            snprintf(command, sizeof(command), TERM_OPEN_LOCATION_COMMAND, current_path);
+            run_executable(command);
+
         } else if (ch == KEY_SHOW_HELP) {
 
             show_help();

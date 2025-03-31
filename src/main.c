@@ -593,10 +593,17 @@ int main(void) {
 
                 char command[1024];
 
-                if ((ext && strcasecmp(ext, ".png") == 0) ||
-                    (ext && strcasecmp(ext, ".jpeg") == 0) ||
-                    (ext && strcasecmp(ext, ".jpg") == 0) ||
-                    (ext && strcasecmp(ext, ".gif") == 0)) {
+                if (entries[selected]->type == file_exec) {
+
+                    char exec_path[2048];
+
+                    snprintf(exec_path, sizeof(exec_path), "%s/%s", current_path, entries[selected]->fname);
+                    run_executable(exec_path);
+
+                } else if ((ext && strcasecmp(ext, ".png") == 0) ||
+                           (ext && strcasecmp(ext, ".jpeg") == 0) ||
+                           (ext && strcasecmp(ext, ".jpg") == 0) ||
+                           (ext && strcasecmp(ext, ".gif") == 0)) {
 
                     snprintf(command, sizeof(command), IMAGE_VIEWER_COMMAND, entries[selected]->fname);
                     run_executable(command);
@@ -613,13 +620,6 @@ int main(void) {
 
                     snprintf(command, sizeof(command), AUDIO_PLAYER_COMMAND, entries[selected]->fname);
                     run_executable(command);
-
-                } else if (entries[selected]->type == file_exec) {
-
-                    char exec_path[2048];
-
-                    snprintf(exec_path, sizeof(exec_path), "%s/%s", current_path, entries[selected]->fname);
-                    run_executable(exec_path);
 
                 } else {
 

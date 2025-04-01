@@ -20,6 +20,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#define key_ctrl(x) ((x) & 0x1f)
+
 /* window and buffer sizes */
 #define LAST_ACTION_SIZE 2048
 #define PROMPT_WIN_HEIGHT 10
@@ -57,6 +59,7 @@ int confirm_box(const char *msg);
 int prompt_input(const char *prompt, char *buffer, int buf_size);
 void show_message(const char *msg);
 void run_executable(char *file_path);
+void run_silent(char *file_path);
 
 static char last_action[LAST_ACTION_SIZE] = "";
 
@@ -314,15 +317,7 @@ int prompt_input(const char *prompt, char *buffer, int buf_size) {
     box(win, 0, 0);
 
     mvwprintw(win, 1, 2, "%s", prompt);
-
-    if (strcmp(prompt, "Run command: ") == 0) {
-
-        mvwprintw(win, 3, 2, "Command: ");
-
-    } else {
-
-        mvwprintw(win, 3, 2, "New name: ");
-    }
+    mvwprintw(win, 3, 2, "Entry: ");
 
     wrefresh(win);
     curs_set(1);
@@ -390,6 +385,12 @@ void run_executable(char *file_path) {
         keypad(stdscr, TRUE);
         curs_set(0);
     }
+}
+
+void run_silent(char *file_path) {
+
+    trim_executable_mark(file_path);
+    system(file_path);
 }
 
 int main(void) {
@@ -555,7 +556,9 @@ int main(void) {
             if (strlen(search_query) > 0) {
 
                 int found = 0;
+
                 for (int i = 0; i < num_entries; i++) {
+                    /* this is slow */
                     if (strcasestr(entries[i]->fname, search_query) != NULL) {
                         selected = i;
                         page = i / ENTRIES_PER_PAGE;
@@ -646,6 +649,7 @@ int main(void) {
 
                 page = selected / ENTRIES_PER_PAGE;
             }
+
         } else if (ch == KEY_RENAME_1 || ch == KEY_RENAME_2) {
 
             char new_name[256] = {0};
@@ -753,7 +757,7 @@ int main(void) {
         } else if (ch == KEY_MKDIR) {
 
             char dir_name[256] = {0};
-            prompt_input("Mkdir: ", dir_name, sizeof(dir_name));
+            prompt_input("mkdir: ", dir_name, sizeof(dir_name));
 
             if (strlen(dir_name) > 0) {
 
@@ -763,7 +767,7 @@ int main(void) {
 
                 } else {
 
-                    snprintf(last_action, LAST_ACTION_SIZE, "Mkdir failed for '%s'", dir_name);
+                    snprintf(last_action, LAST_ACTION_SIZE, "mkdir failed for '%s'", dir_name);
                 }
 
                 free_ls_entries(entries, num_entries);
@@ -851,12 +855,47 @@ int main(void) {
 
             char command[2048];
 
-            snprintf(command, sizeof(command), TERM_OPEN_LOCATION_COMMAND, current_path);
-            run_executable(command);
+            snprintf(command, sizeof(command), TERM_OPEN_LOCATION_COMMAND " > /dev/null 2>&1 &", current_path);
+            run_silent(command);
 
         } else if (ch == KEY_SHOW_HELP) {
 
             show_help();
+        }
+
+        else if (ch == KEY_COPY_PATH) {
+
+            char command[2048];
+
+            snprintf(command, sizeof(command), CLIPBOARD_COMMAND, current_path);
+            run_silent(command);
+
+            snprintf(last_action, LAST_ACTION_SIZE, "Copied '%s' (current path) in to clipboard.", current_path);
+        }
+
+        else if (ch == KEY_GOTO_PATH) {
+
+            char new_path[1024];
+
+            prompt_input("Go to: ", new_path, sizeof(new_path));
+
+            if (strcmp(new_path, "~") == 0) {
+                snprintf(new_path, sizeof(new_path), CUSTOM_HOME_PATH);
+            }
+
+            if (chdir(new_path) == 0) {
+
+                if (realpath(".", current_path) == NULL) {
+
+                    perror("realpath");
+                    break;
+                }
+
+                free_ls_entries(entries, num_entries);
+                num_entries = load_ls_entries(current_path, &entries);
+            }
+
+            snprintf(last_action, LAST_ACTION_SIZE, "Moved to %s", new_path);
         }
     }
 

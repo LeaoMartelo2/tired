@@ -1,17 +1,4 @@
-/* Copyright 2025 Henryk Szenkowicz Holtman
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files(the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and / or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions :
-
-    The above copyright notice and this permission notice shall be included in all copies
-    or
-    substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED “AS IS”,
-    WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
 /*
-
  _____ _              _
 |_   _(_)_ __ ___  __| |
   | | | | '__/ _ \/ _` |
@@ -26,13 +13,15 @@ Configuration file
 #define LS_COMMAND "\\ls -F -l -h -a"
 
 /* just keep in mind that it works best with the default flags on (or atleast -F and -l)
- * and requires a '\' (escaped) at the start to ignore any changes in your .bashrc or any shell you might have. */
+ * and requires a '\' (escaped) at the start to ignore any flags in your .bashrc or any shell you might have. */
 
+#define CUSTOM_HOME_PATH "/home/leaomartelo/"
 #define IMAGE_VIEWER_COMMAND "gwenview %s"
 #define VIDEO_PLAYER_COMMAND "mpv %s"
 #define AUDIO_PLAYER_COMMAND "vlc %s"
 #define TERM_OPEN_COMMAND "alacritty --hold -e ./%s"
-#define TERM_OPEN_LOCATION_COMMAND "alacritty --working-directory %s"
+#define TERM_OPEN_LOCATION_COMMAND "nohup alacritty --working-directory %s"
+#define CLIPBOARD_COMMAND "greenclip print %s"
 
 /* Change the command to open the file type, you can change the program and add your custom flags.
  * Make sure it has the %s where the file name is supposed to be when you run the command.*/
@@ -63,6 +52,8 @@ Configuration file
 #define KEY_TOUCH 't'
 #define KEY_TERM_OPEN 'z'
 #define KEY_OPEN_LOCATION 'l'
+#define KEY_COPY_PATH key_ctrl('a')
+#define KEY_GOTO_PATH key_ctrl('g')
 
 /* Ncurses color list:
     COLOR_BLACK
